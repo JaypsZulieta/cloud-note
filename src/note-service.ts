@@ -19,9 +19,13 @@ export class NoteServiceImplementation implements NoteService {
     return noteRepository.findByTitle(title);
   }
 
-  findById(id: number): Promise<Note> {
-    throw new Error("Method not implemented.");
+  async findById(id: number): Promise<Note> {
+    const noteRepository = this.noteRepository;
+    if (!(await noteRepository.existById(id)))
+      throw new NoteNotFoundError(`Note with id '${id}' does not exist`);
+    return noteRepository.findById(id);
   }
+
   findAll(): Promise<Note[]> {
     throw new Error("Method not implemented.");
   }
