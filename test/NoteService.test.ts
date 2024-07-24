@@ -45,7 +45,6 @@ describe("NoteServiceImplementation", () => {
       existByTitle.mockResolvedValue(false);
 
       const title = "Foo";
-
       const note = noteService.findByTitle(title);
 
       expect(note).rejects.toThrow(NoteNotFoundError);
@@ -53,6 +52,42 @@ describe("NoteServiceImplementation", () => {
       expect(findByTitle).not.toHaveBeenCalled();
       expect(existByTitle).toHaveBeenCalledOnce();
       expect(existByTitle).toHaveBeenCalledWith(title);
+    });
+  });
+
+  describe("findById", () => {
+    test("if note exists -> return note", async () => {
+      const note = new NoteBuilder()
+        .id(123)
+        .title("Foo")
+        .body("Bar")
+        .timeStamp(new Date("2003-1-24"))
+        .build();
+      const existById = noteRepository.existById;
+      const findById = noteRepository.findById;
+      existById.mockResolvedValue(true);
+      findById.mockResolvedValue(note);
+
+      const id = 123;
+      expect(await noteService.findById(id)).toEqual(note);
+      expect(existById).toHaveBeenCalledWith(id);
+      expect(findById).toHaveBeenCalledWith(id);
+      expect(existById).toHaveBeenCalledOnce();
+      expect(findById).toHaveBeenCalledOnce();
+    });
+
+    test("if note does not exist -> throw NoteNotFoundError", async () => {
+      const existById = noteRepository.existById;
+      const findById = noteRepository.findById;
+
+      const id = 123;
+      const note = noteService.findById(id);
+
+      expect(note).rejects.toThrow(NoteNotFoundError);
+      expect(note).rejects.toThrow(`Note with id '${id}' does not exist`);
+      expect(findById).not.toHaveBeenCalled();
+      expect(existById).toHaveBeenCalledOnce();
+      expect(existById).toHaveBeenCalledWith(id);
     });
   });
 });
