@@ -27,9 +27,13 @@ export class NoteServiceImplementation implements NoteService {
   }
 
   findAll(): Promise<Note[]> {
-    throw new Error("Method not implemented.");
+    return this.noteRepository.findAll();
   }
-  deleteById(id: number): Promise<Note> {
-    throw new Error("Method not implemented.");
+
+  async deleteById(id: number): Promise<Note> {
+    const noteRepository = this.noteRepository;
+    if (!(await noteRepository.existById(id)))
+      throw new NoteNotFoundError(`Note with id '${id}' does not exist`);
+    return await noteRepository.deleteById(id);
   }
 }
