@@ -33,7 +33,7 @@ export class PostgresNoteRepository implements NoteRepository {
 
   async existByTitle(title: string): Promise<boolean> {
     const rows = await this.connection
-      .prepareStatement('SELECT count(id) as "count" WHERE title = ?')
+      .prepareStatement("SELECT count(id) FROM notes WHERE title = ?")
       .setString(title)
       .execute();
     const row = rows.at(0);
