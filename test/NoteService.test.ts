@@ -1,4 +1,4 @@
-import { describe, test, beforeEach, expect, afterEach, assert } from "vitest";
+import { describe, test, beforeEach, expect, afterEach } from "vitest";
 import { mock, mockClear, MockProxy } from "vitest-mock-extended";
 import { NoteNotFoundError, NoteService, NoteServiceImplementation } from "../src/note-service";
 import { NoteRepository } from "../src/note-repository";
@@ -122,6 +122,83 @@ describe("NoteServiceImplementation", () => {
       noteRepository.existById.mockResolvedValue(true);
       noteRepository.findById.mockResolvedValue(note);
       expect(noteService.findById(123)).resolves.toBe(note);
+    });
+  });
+
+  describe("findAll", () => {
+    test("When called, should call NoteRepository.findAll()", async () => {
+      expect.assertions(1);
+      await noteService.findAll();
+      expect(noteRepository.findAll).toHaveBeenCalled();
+    });
+  });
+
+  describe("deleteById", () => {
+    test("If note does not exist, throw NoteNotFoundError", async () => {
+      expect.assertions(1);
+      noteRepository.existById.mockResolvedValue(false);
+      await noteService.deleteById(123).catch(() => {
+        expect(noteRepository.existById).toHaveBeenCalled();
+      });
+    });
+
+    test("If note does exist, return the deleted Note", async () => {
+      const deletedNote = new NoteBuilder()
+        .id(123)
+        .title("Hello, World")
+        .body("First Program")
+        .timeStamp(new Date("2003-12-20"))
+        .build();
+      noteRepository.existById.mockResolvedValue(true);
+      noteRepository.deleteById.mockResolvedValue(deletedNote);
+
+      expect(await noteService.deleteById(123)).toBe(deletedNote);
+    });
+
+    test.each([
+      { id: 123, exists: true },
+      { id: 54417, exists: false },
+      { id: 6498, exists: true },
+      { id: 2589, exists: true },
+      { id: 890294, exists: false },
+      { id: 89265, exists: false },
+    ])(
+      "When called with $id, should call NoteRepository.existById($id)",
+      async ({ id, exists }) => {
+        noteRepository.existById.mockResolvedValue(exists);
+        await noteService
+          .deleteById(id)
+          .then(() => {
+            expect(noteRepository.existById).toHaveBeenCalledWith(id);
+          })
+          .catch(() => {
+            expect(noteRepository.existById).toBeCalledWith(id);
+          });
+      }
+    );
+
+    test.each([
+      { id: 123 },
+      { id: 54417 },
+      { id: 6498 },
+      { id: 2589 },
+      { id: 890294 },
+      { id: 89265 },
+    ])(
+      "When called with $id and Note exists, should call NoteRepository.deleteById($id)",
+      async ({ id }) => {
+        noteRepository.existById.mockResolvedValue(true);
+        await noteService.deleteById(id);
+        expect(noteRepository.deleteById).toHaveBeenCalledWith(id);
+      }
+    );
+
+    test("When Note does not exist, shouldn't call NoteRepository.deleteById", async () => {
+      expect.assertions(1);
+      noteRepository.existById.mockResolvedValue(false);
+      await noteService.deleteById(123).catch(() => {
+        expect(noteRepository.deleteById).not.toHaveBeenCalled();
+      });
     });
   });
 });
