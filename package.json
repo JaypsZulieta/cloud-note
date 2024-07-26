@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "hono": "^4.5.1",
-    "tsdbc-pg": "^0.0.1"
+    "tsdbc-pg": "^0.2.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240529.0",

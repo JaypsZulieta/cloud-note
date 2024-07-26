@@ -12,8 +12,8 @@ importers:
         specifier: ^4.5.1
         version: 4.5.1
       tsdbc-pg:
-        specifier: ^0.0.1
-        version: 0.0.1
+        specifier: ^0.2.0
+        version: 0.2.0
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20240529.0
@@ -952,8 +952,8 @@ packages:
       typescript:
         optional: true
 
-  tsdbc-pg@0.0.1:
-    resolution: {integrity: sha512-K2ABEOI9HuC7zcUSQxWHhY/q3PC1qccfTXk9Ln5qTAjhwxEzk0AJ1CZx+5vF0qoxAe63A2s/xIqhg03Ml9rsSA==}
+  tsdbc-pg@0.2.0:
+    resolution: {integrity: sha512-HEHWMUCD4ODzQdvBlsBPrXqTTrD4xuvyQz6/FoD/ay6w20G+69A0hCSB7yo0Z++EDD/F5ZG3neZFJIK1KFw00g==}
 
   tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
@@ -1848,7 +1848,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.5.4
 
-  tsdbc-pg@0.0.1:
+  tsdbc-pg@0.2.0:
     dependencies:
       '@types/pg': 8.11.6
       pg: 8.12.0
